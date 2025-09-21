@@ -1,4 +1,4 @@
-app = "nsyncthing"
+app = "nsync"
 
 [build]
   image = "syncthing/syncthing:latest"
