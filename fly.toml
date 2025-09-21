@@ -1,44 +1,8 @@
 app = "nsync"
-primary_region = 'ewr'
 
 [build]
   image = "syncthing/syncthing:latest"
 
-[env]
-  # Only listen for connections to admin GUI through fly.io's private Wireguard
-  # network.
-  STGUIADDRESS = "fly-local-6pn:8384"
-
 [mounts]
-  source="syncthing_data"
-  destination="/var/syncthing"
-
-[[services]]
-  internal_port = 22000
-  protocol = "tcp"
-
-  [[services.ports]]
-    port = 22000
-
-  [[services.tcp_checks]]
-    grace_period = "1s"
-    interval = "15s"
-    restart_limit = 0
-    timeout = "2s"
-
-[[services]]
-  internal_port = 22000
-  protocol = "udp"
-
-  [[services.ports]]
-    port = 22000
-
-[[services]]
-  internal_port = 21027
-  protocol = "udp"
-
-  [[services.ports]]
-    port = 21027
-
-[[vm]]
-  size = 'shared-cpu-1x'
+source="syncthing_data"
+destination="/var/syncthing"
