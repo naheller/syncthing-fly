@@ -1,8 +1,38 @@
-app = "nsync"
+# fly.toml file generated for syncthing deployment on Fly.io
+
+app = "nsync"  # Choose a unique name for your app
 
 [build]
-  image = "syncthing/syncthing:latest"
+  # Syncthing container image
+  image = "syncthing/syncthing:latest"  # Use the latest Syncthing Docker image
+
+[env]
+  # Environment variables for Syncthing
+  STGUIADDRESS = "0.0.0.0:8384"  # Bind the web GUI to all interfaces on port 8384
+  STNODENAME = "flyio"   # Custom name for your Syncthing node
+  UMASK = "0022"                 # File permissions for Syncthing
+  PUID = "1000"                  # User ID
+  PGID = "1000"                  # Group ID
 
 [mounts]
-source="syncthing_data"
-destination="/var/syncthing"
+  # Mount the persistent storage location for Syncthing
+  source = "syncthing-data"  # This is the volume where Syncthing stores its data
+  destination = "/var/lib/syncthing"
+
+[services]
+  [[services.http]]
+  internal_port = 8384  # The port on which Syncthing's web GUI will be accessible
+  force_https = true    # Force HTTPS for the Syncthing web UI
+  port = "80"           # Port that will be exposed externally (HTTP)
+
+  [[services.tcp]]
+  internal_port = 22000  # The default port for peer-to-peer Syncthing communication
+  port = "22000"         # Port that will be exposed externally for Syncthing sync traffic
+
+  [[services.tcp]]
+  internal_port = 21027  # The default port for local discovery
+  port = "21027"         # Port exposed externally for local discovery
+
+[experimental]
+  # This section is optional and used for specific experimental settings
+  auto_rollback = true  # Automatically roll back to the previous state if deployment fails
